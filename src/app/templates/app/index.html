@@ -1,0 +1,36 @@
+{% extends "app/layout.html" %}
+{% load static %}
+
+{%block body%}
+<h2>Upload Resume</h2>
+
+{% if success %}
+  <p style="color: green;">✅ Resume uploaded successfully!</p>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Upload</button>
+</form>
+
+<hr>
+
+<h3>Uploaded Resumes</h3>
+<ul>
+  {% for resume in resumes %}
+    <li>
+      {{ resume.name }} ({{ resume.email }}) - 
+      <a href="{{ resume.file.url }}" target="_blank">📄 View</a>
+    </li>
+  {% empty %}
+    <li>No resumes uploaded yet.</li>
+  {% endfor %}
+</ul>
+
+
+{%endblock%}
+
+{% block script %}
+    <script src="{% static 'app/home.js' %}"></script>
+{% endblock %}
