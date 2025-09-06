@@ -22,3 +22,19 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# Django migrations (ignore all migration files except __init__.py)
+*/migrations/*
+!*/migrations/__init__.py
+
+core/__pycache__/
