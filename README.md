@@ -1,1 +1,1 @@
-# smarthire
+# SmartHire
