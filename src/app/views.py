@@ -9,9 +9,32 @@ from django.utils import timezone
 from .models import User 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.shortcuts import render, redirect
+from .forms import ResumeForm
+from .models import Resume
+
+
 
 def index(request):
-    return render(request, "app/index.html")
+    success = False
+    if request.method == 'POST':
+        form = ResumeForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            success = True
+            form = ResumeForm()  # reset form after save
+    else:
+        form = ResumeForm()
+
+    resumes = Resume.objects.all()  # get all uploaded resumes
+
+    return render(request, 'app/index.html', {
+        'form': form,
+        'success': success,
+        'resumes': resumes
+    })
+def success(request):
+    return render(request, 'app/success.html')
 
 def login_view(request):
     if request.method == "POST":
