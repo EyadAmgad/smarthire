@@ -12,27 +12,40 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import ResumeForm
 from .models import Resume
-
+from .crewai_pipeline.runner import run_nexus_crew
 
 
 def index(request):
     success = False
+    message = None  
+
     if request.method == 'POST':
         form = ResumeForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            success = True
-            form = ResumeForm()  # reset form after save
+            resume_obj = form.save()
+
+            # Run CrewAI pipeline on the uploaded file
+            resume_path = resume_obj.file.path
+            candidate_email = request.POST.get("email")  # <-- get email from form
+
+            try:
+                run_nexus_crew(resume_path, candidate_email)  # pipeline now sends email
+                success = True
+                message = "✅ Resume submitted successfully. We’ll notify you by email."
+            except Exception as e:
+                message = f"❌ Error while processing resume: {e}"
+
+            # Reset the form after saving
+            form = ResumeForm()
     else:
         form = ResumeForm()
-
-    resumes = Resume.objects.all()  # get all uploaded resumes
 
     return render(request, 'app/index.html', {
         'form': form,
         'success': success,
-        'resumes': resumes
+        'message': message,
     })
+
 def success(request):
     return render(request, 'app/success.html')
 
