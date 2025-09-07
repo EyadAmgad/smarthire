@@ -32,6 +32,7 @@ __pycache__/
 db.sqlite3
 media/
 staticfiles/
+outputs/
 
 # Django migrations (ignore all migration files except __init__.py)
 */migrations/*
